@@ -1,12 +1,8 @@
-App.controller('TypeController', ['$scope', 'socket', function($scope, socket) {
-  
+App.controller('TypeController', ['$scope', 'socket', 'ColorManager', function($scope, socket, colorConvert) {
+
     socket.on('chat message', function (message) {
       $scope.testMessages = 'some message ' + message;
     });
-
-    $scope.testClick = function(message) {
-      socket.emit('chat message', message);
-    };
 
 
     $scope.tab = 1;
@@ -31,87 +27,18 @@ App.controller('TypeController', ['$scope', 'socket', function($scope, socket) {
     $scope.customSettings = {
       control: 'hue', //hue, brightness, saturation, wheel
       theme: 'bootstrap',
-      position: 'bottom left',
+      position: 'bottom left', // first top/bottom then left/right
       inline: true,
-      defaultValue: '#266ad1',
+      //opacity: true,
+      //letterCase: 'uppercase' //lowercase
     };
+
+    $scope.$watch('color.colorSet', function() {
+        socket.emit('change-color', colorConvert.hexToRgb($scope.color.colorSet));
+    });
 
     $scope.color = {
-      hue: '#00AA00',
-      brightness: '#FFFFFF',
-      saturation: '#AAAAAA',
-      wheel: '#336688',
-      textfield: '#BBBBBB',
-      hidden: '#121212',
-      inline: '#555555',
-      topleft: '#444444',
-      topright: '#777777',
-      bottomleft: '#888888',
-      bottomright: '#191919',
-      opacityHex: '#aabbaa',
-      opacityVal: '1',
-      opacityRgba: 'rgba(0,0,0,0.5)',
-      lettercase: '#EEEEAA',
-      random: '#000000',
-      dynamic: '#CCCCCC'
-      // formvalidation: '#EEEEAA'
-    };
-    //Objects for control types:
-    //object for brightness
-    $scope.brightnesssettings = {
-      control: 'brightness'
-    };
-
-    //object for saturation
-    $scope.saturationsettings = {
-      control: 'saturation'
-    };
-
-    //object for wheel
-    $scope.wheelsettings = {
-      control: 'wheel'
-    };
-
-
-    //objects for input modes
-    //inline textfield
-    $scope.inlinesettings = {
-      inline: true
-    };
-
-    //objects for positions
-    $scope.topleftsettings = {
-      position: 'top left'
-    };
-
-    $scope.toprightsettings  = {
-      position: 'top right'
-    };
-
-    $scope.bottomrightsettings = {
-      position: 'bottom right'
-    };
-
-
-    //objects for more
-    $scope.opacitysettings = {
-      opacity: true
-    };
-
-    $scope.lettercasesettings = {
-      letterCase: 'uppercase'
-    };
-
-    $scope.dynamicSettings = {
-      letterCase: 'uppercase'
-    };
-
-    $scope.changeLetterCase = function (letterCase) {
-      $scope.dynamicSettings.letterCase = letterCase;
-    };
-
-    $scope.changePosition = function (pos) {
-      $scope.dynamicSettings.position = pos;
+      colorSet: '#266ad1',
     };
 
     $scope.randomColor = function () {

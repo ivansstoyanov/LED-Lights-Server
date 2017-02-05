@@ -4,7 +4,6 @@ App.factory('socket', function ($rootScope) {
   return {
     on: function (eventName, callback) {
       socket.on(eventName, function () {
-        debugger;
         var args = arguments;
 
         $rootScope.$apply(function () {
@@ -14,7 +13,6 @@ App.factory('socket', function ($rootScope) {
     },
     emit: function (eventName, data, callback) {
       socket.emit(eventName, data, function () {
-        debugger;
         var args = arguments;
         
         $rootScope.$apply(function () {
