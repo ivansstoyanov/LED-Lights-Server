@@ -21,12 +21,18 @@
     <script src="/bower_components/angular-minicolors/angular-minicolors.js" type="text/javascript"></script>
 
     <script src="/public/app.js" type="text/javascript"></script>
-    <script src="/public/controllers/SocketFactory.js" type="text/javascript"></script>
-    <script src="/public/controllers/ColorManagerFactory.js" type="text/javascript"></script>
-    <script src="/public/controllers/TypeController.js" type="text/javascript"></script>
+
+    <script src="/public/factories/SocketFactory.js" type="text/javascript"></script>
+    <script src="/public/factories/ColorManagerFactory.js" type="text/javascript"></script>
+
+    <script src="/public/controllers/AppController.js" type="text/javascript"></script>
+    <script src="/public/controllers/ColorController.js" type="text/javascript"></script>
+    <script src="/public/controllers/TransitionsController.js" type="text/javascript"></script>
+
+    <script src="/public/directives/colorTransition.js" type="text/javascript"></script>
 
   <body ng-app="MyApp" class="ng-scope">
-    <div ng-controller="TypeController" class="ng-scope">
+    <div ng-controller="AppController" class="ng-scope">
       <div class="container">
         <center><h2>LED Lights System</h2></center>
 
@@ -55,7 +61,7 @@
               <div class="col-md-7">
 
                 <div ng-show="isSet(1)">                  
-                    <div class="row">
+                    <div class="row" ng-controller="ColorController" class="ng-scope">
                       
                         <div style="display:inline-block">
                           <ul class="nav nav-pills nav-stacked vertical">
@@ -94,8 +100,11 @@
                     </div>
                 </div>
 
-                <div ng-show="isSet(2)">                  
-                  <p>comming soon</p>
+                <div ng-show="isSet(2)">
+                  <div class="row" ng-controller="TransitionsController" class="ng-scope">
+                    <p>comming soon</p>
+                    <div color-transition></div>
+                  </div>
                 </div>
 
                 <div ng-show="isSet(3)">                  
