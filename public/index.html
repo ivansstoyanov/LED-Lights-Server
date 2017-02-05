@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Vanyo LED Lights</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/css/angular-material.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/jquery-minicolors/jquery.minicolors.css"></script>
+    <link rel="stylesheet" href="/public/css/site.css">
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/socket.io-1.2.0.js"></script>
+
+    <script src="/js/angular-route.js"></script>
+    <script src="/js/angular-animate.min.js"></script>
+
+    <script src="/bower_components/jquery-minicolors/jquery.minicolors.js" type="text/javascript"></script>
+    <script src="/bower_components/angular-minicolors/angular-minicolors.js" type="text/javascript"></script>
+
+    <script src="/public/app.js" type="text/javascript"></script>
+    <script src="/public/controllers/SocketFactory.js" type="text/javascript"></script>
+    <script src="/public/controllers/TypeController.js" type="text/javascript"></script>
+
+  <body ng-app="MyApp" class="ng-scope">
+    <div ng-controller="TypeController" class="ng-scope">
+      <div class="container">
+        <center><h2>LED Lights System</h2></center>
+        
+        <div class="row">
+          <div class="col-md-10">
+
+            <div class="row" style="margin-bottom:20px">
+              <div class="col-md-7">
+                <center>
+                <ul class="nav nav-pills nav-stacked">
+                  <li ng-class="{ active: isSet(1) }" style="display:inline-block">
+                      <a href ng-click="setTab(1)">Color</a>
+                  </li>
+                  <li ng-class="{ active: isSet(2) }" style="display:inline-block">
+                      <a href ng-click="setTab(2)">Transitions</a>
+                  </li>
+                  <li ng-class="{ active: isSet(3) }" style="display:inline-block">
+                      <a href ng-click="setTab(3)">Effects</a>
+                  </li>
+                </ul>
+                </center>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-7">
+
+                <div ng-show="isSet(1)">                  
+                    <div class="row">
+                      
+                        <div style="display:inline-block">
+                          <ul class="nav nav-pills nav-stacked vertical">
+                            <li ng-class="{ active: isColorModeSet('hue') }">
+                                <a href ng-click="setColorMode('hue')">Hue</a>
+                            </li>
+                            <li ng-class="{ active: isColorModeSet('brightness') }">
+                                <a href ng-click="setColorMode('brightness')">Brightness</a>
+                            </li>
+                            <li ng-class="{ active: isColorModeSet('saturation') }">
+                                <a href ng-click="setColorMode('saturation')">Saturation</a>
+                            </li>
+                            <li ng-class="{ active: isColorModeSet('wheel') }">
+                                <a href ng-click="setColorMode('wheel')">Wheel</a>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div class="form-group" style="display:inline-block;">
+                          <input class="form-control" ng-value="color.colorSet" ng-model="color.colorSet"/>
+                          <label for="color-input" class="form-control" ng-style="{'background-color': color.colorSet}"></label>
+                          <input
+                            minicolors="customSettings"
+                            id="color-input"
+                            class="form-control"
+                            type="text"
+                            ng-model="color.colorSet">
+                        </div>
+
+                        <div style="display:inline-block;width:100%;padding: 30px;font-size: 21px;font-weight: 200;background-color: #eee;">
+                          <center>
+                            Apply change: <input type="checkbox" ng-model="checked">
+                          </center>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div ng-show="isSet(2)">                  
+                  <p>comming soon</p>
+                </div>
+
+                <div ng-show="isSet(3)">                  
+                  <p> Comming soon</p>
+                </div>
+              </div>
+            </div>
+          </dov>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
