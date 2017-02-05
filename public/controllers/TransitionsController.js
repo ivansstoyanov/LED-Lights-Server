@@ -1,22 +1,29 @@
 App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', function($scope, socket, colorManager) {
 
-    // $scope.setColorMode = function(mode) {
-    //   $scope.customSettings.control = mode;
-    // };
+    $scope.setColorMode = function(mode) {
+      $scope.defaultSettings.control = mode;
+    };
 
-    // $scope.isColorModeSet = function(tabNum) {
-    //   return $scope.customSettings.control === tabNum;
-    // };
+    $scope.isColorModeSet = function(tabNum) {
+      return $scope.defaultSettings.control === tabNum;
+    };
 
+    $scope.defaultColor = colorManager.getRandomColor();
+    $scope.defaultSettings = {
+      control: 'saturation', //hue, brightness, saturation, wheel
+      theme: 'bootstrap',
+    };
+    $scope.createdTransitions = [];
 
-    // $scope.customSettings = {
-    //   control: 'hue', //hue, brightness, saturation, wheel
-    //   theme: 'bootstrap',
-    //   position: 'bottom left', // first top/bottom then left/right
-    //   inline: true,
-    //   //opacity: true,
-    //   //letterCase: 'uppercase' //lowercase
-    // };
+    $scope.addTransition = function () {
+      $scope.createdTransitions.push({
+        colorSet: colorManager.getRandomColor()
+      });
+    }
+
+    $scope.removeTransition = function () {
+      $scope.createdTransitions.pop();
+    }
 
     // $scope.$watch('color.colorSet', function() {
     //     socket.emit('change-color', colorManager.hexToRgb($scope.color.colorSet));

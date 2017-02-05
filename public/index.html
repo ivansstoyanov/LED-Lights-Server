@@ -29,6 +29,8 @@
     <script src="/public/controllers/ColorController.js" type="text/javascript"></script>
     <script src="/public/controllers/TransitionsController.js" type="text/javascript"></script>
 
+    <script src="/public/directives/colorEffect.js" type="text/javascript"></script>
+    <script src="/public/directives/colorSelect.js" type="text/javascript"></script>
     <script src="/public/directives/colorTransition.js" type="text/javascript"></script>
 
   <body ng-app="MyApp" class="ng-scope">
@@ -102,8 +104,43 @@
 
                 <div ng-show="isSet(2)">
                   <div class="row" ng-controller="TransitionsController" class="ng-scope">
-                    <p>comming soon</p>
-                    <div color-transition></div>
+
+                    <div>
+                      <center>
+                      <ul class="nav nav-pills nav-stacked vertical">
+                        <li ng-class="{ active: isColorModeSet('hue') }" style="display:inline-block">
+                            <a href ng-click="setColorMode('hue')">Hue</a>
+                        </li>
+                        <li ng-class="{ active: isColorModeSet('brightness') }" style="display:inline-block">
+                            <a href ng-click="setColorMode('brightness')">Brightness</a>
+                        </li>
+                        <li ng-class="{ active: isColorModeSet('saturation') }" style="display:inline-block">
+                            <a href ng-click="setColorMode('saturation')">Saturation</a>
+                        </li>
+                        <li ng-class="{ active: isColorModeSet('wheel') }" style="display:inline-block">
+                            <a href ng-click="setColorMode('wheel')">Wheel</a>
+                        </li>
+                      </ul>
+                      </center>
+                    </div>
+
+                    <div class="transition-container">
+                      <div color-select
+                          color-set="defaultColor"
+                          default-settings="defaultSettings">
+                      </div>
+
+                      <div ng-repeat="transition in createdTransitions">
+                          <div color-transition
+                            color-set="transition.colorSet"
+                            default-settings="defaultSettings">
+                          </div>
+                      </div>
+
+                      <button ng-click="addTransition()">+ transition</button>
+                      <button ng-click="removeTransition()">- transition</button>
+                    </div>
+                                        
                   </div>
                 </div>
 
