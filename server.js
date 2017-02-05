@@ -9,7 +9,7 @@ var io = require('socket.io')(http);
 activeStrips = ['strip1', 'strip2'];
 
 LED_Strips = {
-  srtip1: {
+  strip1: {
     rPin: null,
     gPin: null,
     bPin: null,
@@ -19,7 +19,7 @@ LED_Strips = {
     bgpio: null,
   },
 
-  srtip2: {
+  strip2: {
     rPin: null,
     gPin: null,
     bPin: null,
