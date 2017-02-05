@@ -1,0 +1,14 @@
+[
+    {
+        "strip1": {
+            "rPin": 17,
+            "gPin": 18,
+            "bPin": 27
+        },
+        "strip2": {
+            "rPin": 22,
+            "gPin": 23,
+            "bPin": 24
+        }
+    }
+]

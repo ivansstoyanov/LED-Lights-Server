@@ -1,9 +1,58 @@
 var express = require('express');
 var app = express();
+var router = express.Router();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var db = require('diskdb');
 
-//PIN CONFIG
+///////Application Configuration
+////////////////////////////////
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+app.use('/database', express.static(__dirname + '/database'));
+app.use('/js', express.static(__dirname + '/js'));
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/controllers', express.static(__dirname + '/controllers'));
+app.use('/public', express.static(__dirname + '/public'));
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
+
+///////Database Setup
+/////////////////////
+db = db.connect('database', [
+    'stripsSettings',
+    'templates'
+]);
+
+Database = {
+    getSettings: function () {
+        return db.stripsSettings.find()[0];
+    },
+    getTemplates: function () {
+        return db.templates.find();
+    }
+};
+
+
+///////API Setup
+////////////////
+app.use('/api', router);
+
+router.get('/settings', function(req, res) {
+  var pinSettings = Database.getSettings();
+
+  res.json(pinSettings);
+});
+
+router.get('/templates', function(req, res) {
+  var templates = Database.getTemplates();
+
+  res.json(templates);
+});
+
+///////Strip PIN Configuration
+//////////////////////////////
 //var Gpio = require('pigpio').Gpio;
 
 activeStrips = ['strip1', 'strip2'];
@@ -30,46 +79,27 @@ LED_Strips = {
   }
 };
 
-var setPinSettings = function (pinSettings) {
+var setPinSettings = function () {
+  var pinSettings = Database.getSettings();
+
   LED_Strips.strip1.rPin = pinSettings.strip1.rPin;
-  LED_Strips.strip1.rgpio = new Gpio(LED_Strips.strip1.rPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip1.rgpio = new Gpio(LED_Strips.strip1.rPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip1.gPin = pinSettings.strip1.gPin;
-  LED_Strips.strip1.ggpio = new Gpio(LED_Strips.strip1.gPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip1.ggpio = new Gpio(LED_Strips.strip1.gPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip1.bPin = pinSettings.strip1.bPin;
-  LED_Strips.strip1.bgpio = new Gpio(LED_Strips.strip1.bPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip1.bgpio = new Gpio(LED_Strips.strip1.bPin, { mode: Gpio.OUTPUT });
   
   LED_Strips.strip2.rPin = pinSettings.strip2.rPin;
-  LED_Strips.strip2.rgpio = new Gpio(LED_Strips.strip2.rPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip2.rgpio = new Gpio(LED_Strips.strip2.rPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip2.gPin = pinSettings.strip2.gPin;
-  LED_Strips.strip2.ggpio = new Gpio(LED_Strips.strip2.gPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip2.ggpio = new Gpio(LED_Strips.strip2.gPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip2.bPin = pinSettings.strip2.bPin;
-  LED_Strips.strip2.bgpio = new Gpio(LED_Strips.strip2.bPin, { mode: Gpio.OUTPUT });
+  //LED_Strips.strip2.bgpio = new Gpio(LED_Strips.strip2.bPin, { mode: Gpio.OUTPUT });
 };
-var pinSettings = {
-  strip1: {
-    rPin: 17,
-    gPin: 18,
-    bPin: 27,
-  },
-  strip2: {
-    rPin: 22,
-    gPin: 23,
-    bPin: 24,
-  }
-};
-//setPinSettings(pinSettings);
+setPinSettings();
 
-
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/index.html');
-});
-
-app.use('/js', express.static(__dirname + '/js'));
-app.use('/css', express.static(__dirname + '/css'));
-app.use('/controllers', express.static(__dirname + '/controllers'));
-app.use('/public', express.static(__dirname + '/public'));
-app.use('/bower_components', express.static(__dirname + '/bower_components'));
-
+///////Socket IO Configuration
+//////////////////////////////
 io.on('connection', function(socket) {
   socket.on('change-pin-settings', function(pinSettings) {
     //setPinSettings(pinSettings);
@@ -98,6 +128,8 @@ io.on('connection', function(socket) {
   });
 });
 
+///////Application Start
+////////////////////////
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
