@@ -1,5 +1,19 @@
 <div>
-    transition
+    <label for="speed" class="col-xs-3 control-label" style="float:left">Speed</label>
+    <select name="speed" class="form-control" ng-model="speed" style="width: 74%">
+        <option value="4">Slow</option>
+        <option value="2">Medium</option>
+        <option value="1">Fast</option>
+    </select>
+
+    <label for="refresh" class="col-xs-3 control-label" style="float:left">Refresh</label>
+    <select name="refresh" class="form-control" ng-model="refresh" style="width: 74%">
+        <option value="300">300ms</option>
+        <option value="1000">1000ms</option>
+        <option value="3000">3000ms</option>
+        <option value="10000">10000ms</option>
+    </select>
+
     <div color-select
         color-set="colorSet",
         default-settings="defaultSettings">

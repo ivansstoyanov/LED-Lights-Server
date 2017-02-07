@@ -3,7 +3,9 @@ App.directive('colorTransition', function() {
     templateUrl: 'public/directives/colorTransitionView.html',
     scope: {
         colorSet: '=',
-        defaultSettings: '='
+        defaultSettings: '=',
+        speed: '=',
+        refresh: '='
     },
   };
 });

@@ -32,6 +32,7 @@
     <script src="/public/directives/colorEffect.js" type="text/javascript"></script>
     <script src="/public/directives/colorSelect.js" type="text/javascript"></script>
     <script src="/public/directives/colorTransition.js" type="text/javascript"></script>
+    <script src="/public/directives/repeatTransition.js" type="text/javascript"></script>
 
   <body ng-app="MyApp" class="ng-scope">
     <div ng-controller="AppController" class="ng-scope">
@@ -41,7 +42,7 @@
         <div class="row">
           <div class="col-md-10">
 
-            <div class="row" style="margin-bottom:20px">
+            <div class="row" style="margin-bottom:14px">
               <div class="col-md-7">
                 <center>
                 <ul class="nav nav-pills nav-stacked">
@@ -105,7 +106,7 @@
                 <div ng-show="isSet(2)">
                   <div class="row" ng-controller="TransitionsController" class="ng-scope">
 
-                    <div>
+                    <div style="margin-bottom:14px;font-size:12px">
                       <center>
                       <ul class="nav nav-pills nav-stacked vertical">
                         <li ng-class="{ active: isColorModeSet('hue') }" style="display:inline-block">
@@ -131,16 +132,35 @@
                       </div>
 
                       <div ng-repeat="transition in createdTransitions">
-                          <div color-transition
+                          <div ng-if="transition.type == 'color'" color-transition
                             color-set="transition.colorSet"
-                            default-settings="defaultSettings">
+                            default-settings="defaultSettings"
+                            speed="transition.speed"
+                            refresh="transition.refresh">
+                          </div>
+                          <div ng-if="transition.type == 'repeat'" repeat-transition
+                            repeat-value="transition.repeatValue"
+                            repeat-width="transition.repeatWidth"
+                            color-set="transition.colorSet"
+                            count="transition.count">
                           </div>
                       </div>
-
-                      <button ng-click="addTransition()">+ transition</button>
-                      <button ng-click="removeTransition()">- transition</button>
+                      
+                      <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">
+                        <button class="btn btn-danger" ng-click="removeTransition()">- step</button>
+                        <div class="btn-group">
+                          <a href="#" class="btn btn-default" ng-click="addTransition('repeat', false)">-R</a>
+                          <a href="#" class="btn btn-primary" ng-click="addTransition('repeat', true)">+R</a>
+                        </div>
+                        <button class="btn btn-success" ng-click="addTransition('color')">+ color</button>
+                          <br>
+                        <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">
+                          <button class="btn btn-warning" ng-click="testTransition()">Test</button>
+                          <button class="btn btn-success" ng-click="testTransition()">Save</button>
+                        </div>
+                      </div>
                     </div>
-                                        
+                      
                   </div>
                 </div>
 

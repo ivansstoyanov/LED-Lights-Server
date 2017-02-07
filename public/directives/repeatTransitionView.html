@@ -1,0 +1,20 @@
+<div ng-if="repeatValue">
+    <label ng-style="{'background-color': colorSet, 'width': repeatWidth, 'height': '20px', 'float': 'left'}"
+            for="count" 
+            class="control-label">
+            <span ng-style="{'color': invert}">Repeat</span>
+    </label>
+    <select name="count" class="form-control" ng-model="count" style="width: 70px">
+        <option value="0">0</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="40">40</option>
+    </select>
+</div>
+<div ng-if="repeatValue==false" ng-style="{'background-color': colorSet, 'width': repeatWidth, 'height': '20px', 'float': 'left'}" class="repeat{{repeatValue}}">
+   
+</div>
+<div style="clear:both">
+    
+</div>
