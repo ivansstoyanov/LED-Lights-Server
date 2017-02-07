@@ -4,6 +4,7 @@ var router = express.Router();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var db = require('diskdb');
+var trs = require( __dirname + '/services/transitionService.js');
 
 ///////Application Configuration
 ////////////////////////////////
@@ -123,6 +124,25 @@ io.on('connection', function(socket) {
     //     LED_Strips[activeStrips[i]].ggpio.pwmWrite(color.g);
     //     LED_Strips[activeStrips[i]].bgpio.pwmWrite(color.b);
     // }
+
+    //io.emit('change-color', color);
+  });
+
+  socket.on('test-transition', function(colorTransitions) {
+    colorTransitions = colorTransitions || {};
+
+    if(colorTransitions.length == 0) {
+      return;
+    }
+
+    // for (var i = 0; i < activeStrips.length; i++) {
+    //     LED_Strips[activeStrips[i]].rgpio.pwmWrite(colorTransitions[0].r);
+    //     LED_Strips[activeStrips[i]].ggpio.pwmWrite(colorTransitions[0].g);
+    //     LED_Strips[activeStrips[i]].bgpio.pwmWrite(colorTransitions[0].b);
+    // }
+    
+    TransitionService.setup(colorTransitions);
+    TransitionService.start();
 
     //io.emit('change-color', color);
   });
