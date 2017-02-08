@@ -1,31 +1,35 @@
 module.exports = {
-    data: {},
+    initialData: {},
     SetLedColor: null,
     transHandler: null,
 
     setup: function (data, SetLedColor) {
-        this.data = data;
+        this.initialData = data;
         this.SetLedColor = SetLedColor;
     },
 
     start: function () {
-        this.startTransition(0);
+        // console.log('new color' + this.initialData[0].colorSet.r + " " + this.initialData[0].colorSet.g + " " + this.initialData[0].colorSet.b);
+        // console.log('new color' + this.initialData[1].colorSet.r + " " + this.initialData[1].colorSet.g + " " + this.initialData[1].colorSet.b);
+        // console.log('new color' + this.initialData[2].colorSet.r + " " + this.initialData[2].colorSet.g + " " + this.initialData[2].colorSet.b);
+        var startData = JSON.parse(JSON.stringify(this.initialData));
+        this.startTransition(startData, 0);
     },
     
-    startTransition: function (index) {
+    startTransition: function (data, index) {
         if (this.transHandler) {
             clearInterval(this.transHandler);
         }
 
         //type, repeatValue, count
         
-        var currentObject = JSON.parse(JSON.stringify(this.data[index]));
+        var currentObject = JSON.parse(JSON.stringify(data[index]));
 
         var targetObject= null;
-        if ((index + 1) >= this.data.length) {
-            targetObject = JSON.parse(JSON.stringify(this.data[0]));
+        if ((index + 1) >= data.length) {
+            targetObject = JSON.parse(JSON.stringify(data[0]));
         } else {
-            targetObject = JSON.parse(JSON.stringify(this.data[index + 1]));
+            targetObject = JSON.parse(JSON.stringify(data[index + 1]));
         }
 
         console.log('target color ' + targetObject.colorSet.r + " " + targetObject.colorSet.g + " " + targetObject.colorSet.b);
@@ -34,22 +38,23 @@ module.exports = {
         var duration = targetObject.speed;
         var refreshRate = targetObject.refresh;
         
-        var distance	= this.calculateDistance(currentObject.colorSet, targetObject.colorSet);
+        var currentColor = JSON.parse(JSON.stringify(currentObject.colorSet));
+        var targetColor = JSON.parse(JSON.stringify(targetObject.colorSet));
+        var distance	= this.calculateDistance(currentColor, targetColor);
         var increment	= this.calculateIncrement(distance, fps, duration);
 
-        // graph.updateTargetLines();
-        // graph.updateStats();
+        //this.SetLedColor(JSON.parse(JSON.stringify(currentObject.colorSet)));
 
         var that = this;
         this.transHandler = setInterval(function() {
-            that.transition(index, currentColor, targetColor, increment);
+            that.transition(data, index, currentColor, targetColor, increment);
         }, refreshRate/fps);
     },
 
-    transition: function (index, currentColor, targetColor, increment) {
+    transition: function (data, index, currentColor, targetColor, increment) {
         // checking R
         if (currentColor.r > targetColor.r) {
-            currentColor.r -= increment[1];
+            currentColor.r -= increment[0];
             if (currentColor.r <= targetColor.r) {
                 increment[0] = 0;
             }
@@ -89,19 +94,13 @@ module.exports = {
         //this.SetLedColor(JSON.parse(JSON.stringify(currentColor)));
         //console.log('new color' + currentColor.r + " " + currentColor.g + " " + currentColor.b);
 
-        // applying the new modified color
-        // transElement.style.backgroundColor = rgb2hex(currentColor);
-
-        // graph.updateFills();
-        // graph.updateCurrentColor();
-
         // transition ended. start a new one
         if (increment[0] == 0 && increment[1] == 0 && increment[2] == 0) {
             index++;
-            if(index >= this.data.length) {
+            if(index >= data.length) {
                 index = 0;
             }
-            this.startTransition(index);
+            this.startTransition(data, index);
         }
     },
 

@@ -126,7 +126,7 @@ io.on('connection', function(socket) {
     color = color || {};
 
     console.log("r: " + color.r + "g: " + color.g + "b: " + color.b);
-    SetLedColor(color);
+    //SetLedColor(color);
 
     //io.emit('change-color', color);
   });
