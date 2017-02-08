@@ -1,47 +1,40 @@
-TransitionService = {
+module.exports = {
     data: {},
-    nextColorIndex: 0,
+    SetLedColor: null,
     transHandler: null,
 
-    setup(data) {
-        console.log("setup");
+    setup: function (data, SetLedColor) {
         this.data = data;
+        this.SetLedColor = SetLedColor;
     },
 
-    start() {
-        //endless cycle        
-        //for (var i = 0; i < 3; i++) {
-            // console.log('color1 ' + this.data[0].colorSet.r + " " + this.data[0].colorSet.g + " " + this.data[0].colorSet.b);
-            // console.log('color2 ' + this.data[1].colorSet.r + " " + this.data[1].colorSet.g + " " + this.data[1].colorSet.b);
-            // console.log('color3 ' + this.data[2].colorSet.r + " " + this.data[2].colorSet.g + " " + this.data[2].colorSet.b);
-            // console.log('color4 ' + this.data[3].colorSet.r + " " + this.data[3].colorSet.g + " " + this.data[3].colorSet.b);
-
-            this.startTransition();
-        //}
+    start: function () {
+        this.startTransition(0);
     },
     
-    startTransition() {
+    startTransition: function (index) {
         if (this.transHandler) {
             clearInterval(this.transHandler);
         }
 
-        var fps = 30;
-        var duration = 2;
+        //type, repeatValue, count
         
-        var currentObject = JSON.parse(JSON.stringify(this.data[this.nextColorIndex]));
-        var currentColor = currentObject.colorSet;
+        var currentObject = JSON.parse(JSON.stringify(this.data[index]));
 
         var targetObject= null;
-        if ((this.nextColorIndex + 1) >= this.data.length) {
+        if ((index + 1) >= this.data.length) {
             targetObject = JSON.parse(JSON.stringify(this.data[0]));
         } else {
-            targetObject = JSON.parse(JSON.stringify(this.data[this.nextColorIndex + 1]));
+            targetObject = JSON.parse(JSON.stringify(this.data[index + 1]));
         }
 
-        var targetColor	= targetObject.colorSet;
-        //console.log('target color ' + targetColor.r + " " + targetColor.g + " " + targetColor.b);
+        console.log('target color ' + targetObject.colorSet.r + " " + targetObject.colorSet.g + " " + targetObject.colorSet.b);
+
+        var fps = 30;
+        var duration = targetObject.speed;
+        var refreshRate = targetObject.refresh;
         
-        var distance	= this.calculateDistance(currentColor, targetColor);
+        var distance	= this.calculateDistance(currentObject.colorSet, targetObject.colorSet);
         var increment	= this.calculateIncrement(distance, fps, duration);
 
         // graph.updateTargetLines();
@@ -49,11 +42,11 @@ TransitionService = {
 
         var that = this;
         this.transHandler = setInterval(function() {
-            that.transition(currentColor, targetColor, increment);
-        }, 1000/fps);
+            that.transition(index, currentColor, targetColor, increment);
+        }, refreshRate/fps);
     },
 
-    transition(currentColor, targetColor, increment) {
+    transition: function (index, currentColor, targetColor, increment) {
         // checking R
         if (currentColor.r > targetColor.r) {
             currentColor.r -= increment[1];
@@ -93,6 +86,7 @@ TransitionService = {
             }
         }
 
+        //this.SetLedColor(JSON.parse(JSON.stringify(currentColor)));
         //console.log('new color' + currentColor.r + " " + currentColor.g + " " + currentColor.b);
 
         // applying the new modified color
@@ -103,15 +97,15 @@ TransitionService = {
 
         // transition ended. start a new one
         if (increment[0] == 0 && increment[1] == 0 && increment[2] == 0) {
-            this.nextColorIndex++;
-            if(this.nextColorIndex >= this.data.length) {
-                this.nextColorIndex = 0;
+            index++;
+            if(index >= this.data.length) {
+                index = 0;
             }
-            this.startTransition();
+            this.startTransition(index);
         }
     },
 
-    calculateDistance(colorArray1, colorArray2) {
+    calculateDistance: function (colorArray1, colorArray2) {
         var distance = [];
 
         distance.push(Math.abs(colorArray1.r - colorArray2.r));
@@ -123,7 +117,7 @@ TransitionService = {
 
     // Calculates the increment values for R, G, and B using distance, fps, and duration.
     // This calculation can be made in many different ways.
-    calculateIncrement(distanceArray, fps, duration) {
+    calculateIncrement: function (distanceArray, fps, duration) {
         var fps			= fps || 30;
         var duration	= duration || 1;
         var increment	= [];

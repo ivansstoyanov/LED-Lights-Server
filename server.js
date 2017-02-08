@@ -4,7 +4,7 @@ var router = express.Router();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var db = require('diskdb');
-var trs = require( __dirname + '/services/transitionService.js');
+var transitionService = require( __dirname + '/services/transitionService.js');
 
 ///////Application Configuration
 ////////////////////////////////
@@ -99,6 +99,14 @@ var setPinSettings = function () {
 };
 setPinSettings();
 
+var SetLedColor = function (color) {
+  for (var i = 0; i < activeStrips.length; i++) {
+      LED_Strips[activeStrips[i]].rgpio.pwmWrite(color.r);
+      LED_Strips[activeStrips[i]].ggpio.pwmWrite(color.g);
+      LED_Strips[activeStrips[i]].bgpio.pwmWrite(color.b);
+  }
+}
+
 ///////Socket IO Configuration
 //////////////////////////////
 io.on('connection', function(socket) {
@@ -118,12 +126,7 @@ io.on('connection', function(socket) {
     color = color || {};
 
     console.log("r: " + color.r + "g: " + color.g + "b: " + color.b);
-
-    // for (var i = 0; i < activeStrips.length; i++) {
-    //     LED_Strips[activeStrips[i]].rgpio.pwmWrite(color.r);
-    //     LED_Strips[activeStrips[i]].ggpio.pwmWrite(color.g);
-    //     LED_Strips[activeStrips[i]].bgpio.pwmWrite(color.b);
-    // }
+    SetLedColor(color);
 
     //io.emit('change-color', color);
   });
@@ -131,18 +134,12 @@ io.on('connection', function(socket) {
   socket.on('test-transition', function(colorTransitions) {
     colorTransitions = colorTransitions || {};
 
-    if(colorTransitions.length == 0) {
+    if (colorTransitions.length < 2) {
       return;
     }
 
-    // for (var i = 0; i < activeStrips.length; i++) {
-    //     LED_Strips[activeStrips[i]].rgpio.pwmWrite(colorTransitions[0].r);
-    //     LED_Strips[activeStrips[i]].ggpio.pwmWrite(colorTransitions[0].g);
-    //     LED_Strips[activeStrips[i]].bgpio.pwmWrite(colorTransitions[0].b);
-    // }
-    
-    TransitionService.setup(colorTransitions);
-    TransitionService.start();
+    transitionService.setup(colorTransitions, SetLedColor);
+    transitionService.start();
 
     //io.emit('change-color', color);
   });
