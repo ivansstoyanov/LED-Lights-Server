@@ -1,7 +1,13 @@
+
+.color-select-directive {
+    width: 100%;
+}
+
 .color-select-directive .minicolors-theme-bootstrap .minicolors-swatch {
-    width:295px !important;
+    width:80% !important;
 }
 
 .color-select-directive .minicolors-theme-bootstrap .minicolors-input {
-    padding-left: 300px !important;
+    padding-left: 10px !important;
+    width: 100%
 }

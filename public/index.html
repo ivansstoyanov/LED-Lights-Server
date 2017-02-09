@@ -28,6 +28,7 @@
     <script src="/public/controllers/AppController.js" type="text/javascript"></script>
     <script src="/public/controllers/ColorController.js" type="text/javascript"></script>
     <script src="/public/controllers/TransitionsController.js" type="text/javascript"></script>
+    <script src="/public/controllers/EffectsController.js" type="text/javascript"></script>
     
     <script src="/public/directives/colorSelect.js" type="text/javascript"></script>
     <script src="/public/directives/colorTransition.js" type="text/javascript"></script>
@@ -125,37 +126,24 @@
                     </div>
 
                     <div class="transition-container">
-                      <div color-select
-                          color-set="defaultColor"
-                          default-settings="defaultSettings">
-                      </div>
-
                       <div ng-repeat="transition in createdTransitions">
-                          <div ng-if="transition.type == 'color'" color-transition
+                          <div color-transition
                             color-set="transition.colorSet"
                             default-settings="defaultSettings"
                             speed="transition.speed"
                             refresh="transition.refresh">
                           </div>
-                          <div ng-if="transition.type == 'repeat'" repeat-transition
-                            repeat-value="transition.repeatValue"
-                            repeat-width="transition.repeatWidth"
-                            color-set="transition.colorSet"
-                            count="transition.count">
-                          </div>
                       </div>
                       
-                      <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">
-                        <button class="btn btn-danger" ng-click="removeTransition()">- step</button>
+                      <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">                        
                         <div class="btn-group">
-                          <a href="#" class="btn btn-default" ng-click="addTransition('repeat', false)">-R</a>
-                          <a href="#" class="btn btn-primary" ng-click="addTransition('repeat', true)">+R</a>
+                          <a href="#" class="btn btn-danger" ng-click="removeTransition()">Color</a>
+                          <a href="#" class="btn btn-success" ng-click="addTransition()">+Color</a>
                         </div>
-                        <button class="btn btn-success" ng-click="addTransition('color')">+ color</button>
                           <br>
-                        <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">
-                          <button class="btn btn-warning" ng-click="testTransition()">Test</button>
-                          <button class="btn btn-success" ng-click="testTransition()">Save</button>
+                        <div style="margin-top:40px;margin-bottom:20px;float:right;display:block;">
+                          <button class="btn btn-primary" ng-click="testTransition()">Test</button>
+                          <button class="btn btn-success" ng-click="saveTransition()">Save</button>
                         </div>
                       </div>
                     </div>
@@ -163,9 +151,61 @@
                   </div>
                 </div>
 
-                <div ng-show="isSet(3)">                  
-                  <p> Comming soon</p>
+                <div ng-show="isSet(3)">
+                  <div class="row" ng-controller="EffectsController" class="ng-scope">
+
+                    <div style="margin-bottom:14px;font-size:12px">
+                      <center>
+                      <ul class="nav nav-pills nav-stacked vertical">
+                        <li ng-class="{ active: isTabSet('saved') }" style="display:inline-block">
+                            <a href ng-click="setTab('saved')">Saved</a>
+                        </li>
+                        <li ng-class="{ active: isTabSet('builder') }" style="display:inline-block">
+                            <a href ng-click="setTab('builder')">Builder</a>
+                        </li>
+                      </ul>
+                      </center>
+                    </div>
+
+                    <div class="effects-container">
+                      <div ng-show="isTabSet('saved')">
+                        <div ng-repeat="transition in savedTransitions">
+                          <div>
+                            {{transition}} 
+                            <button class="btn btn-default" ng-click="editEffect(transition)">Edit</button>
+                            <button class="btn btn-success" ng-click="startEffect(transition)">Start</button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-show="isTabSet('builder')">
+                        <div ng-repeat="transition in builderTransitions">
+                          <div repeat-transition
+                            effects-list="savedTransitions"
+                            selected-effect="transition.selectedEffect"
+                            count="transition.count">
+                          </div>
+                        </div>
+                      
+                        <div style="margin-top:10px;margin-bottom:20px;float:right;display:block;">
+                          <div class="btn-group">
+                            <a href="#" class="btn btn-danger" ng-click="removeTransitionTemplate()">-Effect</a>
+                            <a href="#" class="btn btn-success" ng-click="addTransitionTemplate()">+Effect</a>
+                          </div>
+                            <br>
+                          <div style="margin-top:50px;margin-bottom:20px;float:right;display:block;">
+                            <button class="btn btn-primary" ng-click="testEffect()">Test</button>
+                            <button class="btn btn-success" ng-click="saveEffect()">Save</button>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
                 </div>
+
               </div>
             </div>
           </dov>

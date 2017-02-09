@@ -10,4 +10,4 @@ App.controller('AppController', ['$scope', function($scope) {
       return $scope.tab === tabNum;
     };
 
-  }]);
+}]);

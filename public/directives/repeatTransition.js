@@ -1,14 +1,10 @@
-App.directive('repeatTransition', ['ColorManager', function(colorManager) {
+App.directive('repeatTransition', function() {
   return {
     templateUrl: 'public/directives/repeatTransitionView.html',
     scope: {
-        repeatValue: '=',
-        colorSet: '=',
-        repeatWidth: '=',
+        effectsList: '=',
+        selectedEffect: '=',
         count: '='
-    },
-    link: function (scope, element, attrs) {
-      scope.invert = '#' + colorManager.invertHex(scope.colorSet);
     }
   };
-}]);
+});
