@@ -107,6 +107,8 @@ var SetLedColor = function (color) {
   }
 }
 
+SetLedColor = function () {};
+
 ///////Socket IO Configuration
 //////////////////////////////
 io.on('connection', function(socket) {
