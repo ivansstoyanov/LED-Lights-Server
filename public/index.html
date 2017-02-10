@@ -50,7 +50,7 @@
                       <a href ng-click="setTab(1)">Color</a>
                   </li>
                   <li ng-class="{ active: isSet(2) }" style="display:inline-block">
-                      <a href ng-click="setTab(2)">Transitions</a>
+                      <a href ng-click="setTab(2)">Builder</a>
                   </li>
                   <li ng-class="{ active: isSet(3) }" style="display:inline-block">
                       <a href ng-click="setTab(3)">Effects</a>
@@ -160,8 +160,11 @@
                     <div style="margin-bottom:14px;font-size:12px">
                       <center>
                       <ul class="nav nav-pills nav-stacked vertical">
-                        <li ng-class="{ active: isTabSet('saved') }" style="display:inline-block">
-                            <a href ng-click="setTab('saved')">Saved</a>
+                        <li ng-class="{ active: isTabSet('transitions') }" style="display:inline-block">
+                            <a href ng-click="setTab('transitions')">Transitions</a>
+                        </li>
+                        <li ng-class="{ active: isTabSet('effects') }" style="display:inline-block">
+                            <a href ng-click="setTab('effects')">Effects</a>
                         </li>
                         <li ng-class="{ active: isTabSet('builder') }" style="display:inline-block">
                             <a href ng-click="setTab('builder')">Builder</a>
@@ -171,12 +174,22 @@
                     </div>
 
                     <div class="effects-container">
-                      <div ng-show="isTabSet('saved')">
+                      <div ng-show="isTabSet('transitions')">
                         <ul class="list-group">
-                          <li class="list-group-item" ng-repeat="transition in savedEffects" style="margin-bottom:5px">
+                          <li class="list-group-item" ng-repeat="transition in savedTransitions" style="margin-bottom:5px">
                             <span>{{transition.name}} </span>
-                            <button class="btn btn-success" ng-click="startEffect(transition)" style="float:right;margin-top: -7px;margin-left:5px">Start</button>
-                            <button class="btn btn-default" ng-click="editEffect(transition)" style="float:right;margin-top: -7px;">Edit</button>
+                            <button class="btn btn-success" ng-click="startTransition(transition)" style="float:right;margin-top: -7px;margin-left:5px">Start</button>
+                            <button class="btn btn-default" ng-click="editTransition(transition)" style="float:right;margin-top: -7px;">Edit</button>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div ng-show="isTabSet('effects')">
+                        <ul class="list-group">
+                          <li class="list-group-item" ng-repeat="effect in savedEffects" style="margin-bottom:5px">
+                            <span>{{effect.name}} </span>
+                            <button class="btn btn-success" ng-click="startEffect(effect)" style="float:right;margin-top: -7px;margin-left:5px">Start</button>
+                            <button class="btn btn-default" ng-click="editEffect(effect)" style="float:right;margin-top: -7px;">Edit</button>
                           </li>
                         </ul>
                       </div>

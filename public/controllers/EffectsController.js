@@ -1,6 +1,6 @@
 App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', function($scope, socket, colorManager) {
 
-    $scope.tab = 'saved';
+    $scope.tab = 'transitions';
     $scope.setTab = function(tab) {
       $scope.tab = tab;
     };
