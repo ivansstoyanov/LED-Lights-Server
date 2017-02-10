@@ -22,17 +22,37 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 ///////Database Setup
 /////////////////////
 db = db.connect('database', [
-    'stripsSettings',
-    'templates'
+    'settings',
+    'transitions',
+    'effects'
 ]);
 
 Database = {
     getSettings: function () {
-        return db.stripsSettings.find()[0];
+        return db.settings.find()[0];
     },
-    getTemplates: function () {
-        return db.templates.find();
-    }
+    getTransitions: function () {
+        return db.transitions.find();
+    },
+    getEffects: function () {
+        return db.effects.find();
+    },
+    save: function (type, data) {
+      var result = 'done';
+      var effect = db[type].find();
+
+      effect.forEach(function(element) {
+        if (data.name == element.name) {
+          result = 'duplicate name';
+        }
+      }, this);
+
+      if (result == 'done') {
+        db[type].save(data);
+      } 
+
+      return result;
+    },
 };
 
 
@@ -145,6 +165,19 @@ io.on('connection', function(socket) {
 
     //io.emit('change-color', color);
   });
+
+  socket.on('save-transition', function(data) {
+    var result = Database.save('transitions', data);
+
+    io.emit('save-transition-done', result);
+  });
+
+  socket.on('save-effect', function(data) {
+    var result = Database.save('effects', data);
+
+    io.emit('save-effect-done', result);
+  });
+  
 });
 
 ///////Application Start

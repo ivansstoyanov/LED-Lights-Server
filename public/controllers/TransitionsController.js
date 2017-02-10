@@ -7,7 +7,7 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
     $scope.isColorModeSet = function(tabNum) {
       return $scope.defaultSettings.control === tabNum;
     };
-    
+
     $scope.defaultSettings = {
       control: 'saturation', //hue, brightness, saturation, wheel
       theme: 'bootstrap',
@@ -39,13 +39,46 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
       socket.emit('test-transition', $scope.getTransitionModel());
     }
 
-    //TODO implement save transition
+    $scope.transitionName = '';
+    $scope.transitionNameShow = false;
+    $scope.transitionMessage = '';
     $scope.saveTransition = function () {
-      //TODO
-      //add error when value length is 0 or 1
+      if (!$scope.transitionName) {
+        $scope.transitionNameShow = true;
+        $scope.setMessage('set name');
 
-      //console.log($scope.createdTransitions);
-      //socket.emit('test-transition', $scope.getTransitionModel());
+      } else if ($scope.getTransitionModel().length < 2) {
+        $scope.setMessage('set more than two colors');
+
+      } else {
+        var result = {
+          name: $scope.transitionName,
+          data: $scope.getTransitionModel()
+        };
+
+        socket.emit('save-transition', result);
+      }
+    }
+
+    socket.on('save-transition-done', function(data) {
+      if (data == 'done') {
+        $scope.transitionName = '';
+        $scope.transitionNameShow = false;
+       
+        //refresh saved data : )
+        //io.emit('change-pin-settings', pinSettings);
+      }
+
+      $scope.setMessage(data);
+    });
+
+    $scope.setMessage = function (data) {
+      $scope.transitionMessage = data;
+
+      setTimeout(function() { 
+        $scope.transitionMessage = '';
+        $scope.$apply();
+      }, 3000);
     }
 
     $scope.getTransitionModel = function() {
