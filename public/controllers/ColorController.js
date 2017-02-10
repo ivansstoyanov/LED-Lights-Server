@@ -8,6 +8,7 @@ App.controller('ColorController', ['$scope', 'socket', 'ColorManager', function(
       return $scope.customSettings.control === tabNum;
     };
 
+    $scope.applyColor = false;
 
     $scope.customSettings = {
       control: 'hue', //hue, brightness, saturation, wheel
@@ -19,10 +20,12 @@ App.controller('ColorController', ['$scope', 'socket', 'ColorManager', function(
     };
 
     $scope.$watch('color.colorSet', function() {
+      if ($scope.applyColor) {
         socket.emit('change-color', colorManager.hexToRgb($scope.color.colorSet));
+      }
     });
 
     $scope.color = {
-      colorSet: '#266ad1',
+      colorSet: colorManager.getRandomColor()
     };
   }]);
