@@ -65,7 +65,7 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
         $scope.transitionName = '';
         $scope.transitionNameShow = false;
         
-        io.emit('refresh-transitions', true);
+        socket.emit('refresh-transitions', true);
       }
 
       $scope.setMessage(data);

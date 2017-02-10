@@ -9,8 +9,8 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
       return $scope.tab === tabName;
     };
 
-    $scope.savedEffects = [{name: 'asd', data: { colorSet: 'asd' }}, {name: 'asd 1', data: { colorSet: 'asd1' }}];
-    $scope.savedTransitions = [{name: 'trans1', data: { colorSet: 'asd' }}, {name: 'trans2', data: { colorSet: 'asd' }}];
+    $scope.savedEffects = [];
+    $scope.savedTransitions = [];
     $scope.builderTransitions = [];
 
     socket.on('refresh-transitions', function(data) {
@@ -21,8 +21,8 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
       $scope.savedEffects = data;
     });
 
-    io.emit('refresh-transitions', true);
-    io.emit('refresh-effects', true);
+    socket.emit('refresh-transitions', true);
+    socket.emit('refresh-effects', true);
 
     $scope.addTransitionTemplate = function () {
         $scope.builderTransitions.push({
@@ -56,17 +56,17 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
           data: $scope.getEffectModel()
         };
         
-        socket.emit('save-effect', $scope.getEffectModel());
+        socket.emit('save-effect', result);
       }
     }
 
     socket.on('save-effect-done', function(data) {
       if (data == 'done') {
         $scope.effectName = '';
-        $scope.effectNameShow = true;
+        $scope.effectNameShow = false;
        
-        io.emit('refresh-effects', true);
-      } 
+        socket.emit('refresh-effects', true);
+      }
 
       $scope.setMessage(data);
     });
