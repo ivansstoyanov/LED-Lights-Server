@@ -1,3 +1,5 @@
+PI = false;
+
 var express = require('express');
 var app = express();
 var router = express.Router();
@@ -74,29 +76,21 @@ router.get('/templates', function(req, res) {
 
 ///////Strip PIN Configuration
 //////////////////////////////
-//var Gpio = require('pigpio').Gpio;
+var Gpio = null;
+if (PI) {
+  Gpio = require('pigpio').Gpio;
+}
 
 activeStrips = ['strip1', 'strip2'];
 
 LED_Strips = {
   strip1: {
-    rPin: null,
-    gPin: null,
-    bPin: null,
-
-    rgpio: null,
-    ggpio: null,
-    bgpio: null,
+    rPin: null,    gPin: null,    bPin: null,
+    rgpio: null,    ggpio: null,    bgpio: null
   },
-
   strip2: {
-    rPin: null,
-    gPin: null,
-    bPin: null,
-
-    rgpio: null,
-    ggpio: null,
-    bgpio: null,
+    rPin: null,    gPin: null,    bPin: null,
+    rgpio: null,    ggpio: null,    bgpio: null
   }
 };
 
@@ -104,18 +98,22 @@ var setPinSettings = function () {
   var pinSettings = Database.getSettings();
 
   LED_Strips.strip1.rPin = pinSettings.strip1.rPin;
-  //LED_Strips.strip1.rgpio = new Gpio(LED_Strips.strip1.rPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip1.gPin = pinSettings.strip1.gPin;
-  //LED_Strips.strip1.ggpio = new Gpio(LED_Strips.strip1.gPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip1.bPin = pinSettings.strip1.bPin;
-  //LED_Strips.strip1.bgpio = new Gpio(LED_Strips.strip1.bPin, { mode: Gpio.OUTPUT });
   
   LED_Strips.strip2.rPin = pinSettings.strip2.rPin;
-  //LED_Strips.strip2.rgpio = new Gpio(LED_Strips.strip2.rPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip2.gPin = pinSettings.strip2.gPin;
-  //LED_Strips.strip2.ggpio = new Gpio(LED_Strips.strip2.gPin, { mode: Gpio.OUTPUT });
   LED_Strips.strip2.bPin = pinSettings.strip2.bPin;
-  //LED_Strips.strip2.bgpio = new Gpio(LED_Strips.strip2.bPin, { mode: Gpio.OUTPUT });
+
+  if (PI) {
+    LED_Strips.strip1.rgpio = new Gpio(LED_Strips.strip1.rPin, { mode: Gpio.OUTPUT });
+    LED_Strips.strip1.ggpio = new Gpio(LED_Strips.strip1.gPin, { mode: Gpio.OUTPUT });
+    LED_Strips.strip1.bgpio = new Gpio(LED_Strips.strip1.bPin, { mode: Gpio.OUTPUT });
+    
+    LED_Strips.strip2.rgpio = new Gpio(LED_Strips.strip2.rPin, { mode: Gpio.OUTPUT });
+    LED_Strips.strip2.ggpio = new Gpio(LED_Strips.strip2.gPin, { mode: Gpio.OUTPUT });
+    LED_Strips.strip2.bgpio = new Gpio(LED_Strips.strip2.bPin, { mode: Gpio.OUTPUT });
+  }
 };
 setPinSettings();
 
@@ -127,7 +125,9 @@ var SetLedColor = function (color) {
   }
 }
 
-SetLedColor = function () {};
+if (!PI) {
+  SetLedColor = function () {};
+}
 
 ///////Socket IO Configuration
 //////////////////////////////
@@ -148,22 +148,14 @@ io.on('connection', function(socket) {
     color = color || {};
 
     console.log("r: " + color.r + "g: " + color.g + "b: " + color.b);
-    //SetLedColor(color);
-
-    //io.emit('change-color', color);
+    SetLedColor(color);
   });
 
   socket.on('test-transition', function(colorTransitions) {
     colorTransitions = colorTransitions || {};
 
-    if (colorTransitions.length < 2) {
-      return;
-    }
-
     transitionService.setup(colorTransitions, SetLedColor);
     transitionService.start();
-
-    //io.emit('change-color', color);
   });
 
   socket.on('save-transition', function(data) {
