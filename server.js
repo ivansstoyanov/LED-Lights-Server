@@ -177,6 +177,18 @@ io.on('connection', function(socket) {
 
     io.emit('save-effect-done', result);
   });
+
+  socket.on('refresh-transitions', function(data) {
+    var result = Database.getTransitions();
+
+    io.emit('refresh-transitions', result);
+  });
+
+  socket.on('refresh-effects', function(data) {
+    var result = Database.getEffects();
+
+    io.emit('refresh-effects', result);
+  });
   
 });
 

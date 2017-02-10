@@ -1,9 +1,9 @@
 <div>
-    <select name="count" class="form-control" ng-model="selectedEffect" style="float:left;width: 75%">
-        <option ng-repeat="effect in effectsList" value="{{effect}}">{{effect}}</option>
+    <select name="count" class="form-control" ng-model="selectedTransition" style="float:left;width: 75%">
+        <option ng-repeat="transition in transitionsList" value="{{transition.name}}">{{transition.name}}</option>
     </select>
-    <select name="count" class="form-control" ng-model="count" style="float:left;width: 70px">
-        <option value="0">0</option>
+    <select name="count" class="form-control" ng-model="count" style="float:left;margin-left:8px;width: 20%">
+        <option value="0">infinite</option>
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="20">20</option>

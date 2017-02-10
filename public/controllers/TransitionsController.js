@@ -32,10 +32,10 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
     }
 
     $scope.testTransition = function () {
-      //TODO
-      //add error when value length is 0 or 1
-
-      console.log($scope.createdTransitions);
+      if ($scope.getTransitionModel().length < 2) {
+        $scope.setMessage('set more than two colors');
+      }
+      
       socket.emit('test-transition', $scope.getTransitionModel());
     }
 
@@ -64,9 +64,8 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
       if (data == 'done') {
         $scope.transitionName = '';
         $scope.transitionNameShow = false;
-       
-        //refresh saved data : )
-        //io.emit('change-pin-settings', pinSettings);
+        
+        io.emit('refresh-transitions', true);
       }
 
       $scope.setMessage(data);
@@ -94,8 +93,4 @@ App.controller('TransitionsController', ['$scope', 'socket', 'ColorManager', fun
       
       return result;
     }
-
-    // $scope.$watch('color.colorSet', function() {
-    //     socket.emit('change-color', colorManager.hexToRgb($scope.color.colorSet));
-    // });
   }]);

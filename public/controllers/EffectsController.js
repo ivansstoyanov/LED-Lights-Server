@@ -9,18 +9,24 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
       return $scope.tab === tabName;
     };
 
-    $scope.savedTransitions = ['saved1', 'saved2'];
-    $scope.builderTransitions = [{
-        //effectsList: $scope.savedTransitions,
-        selectedEffect: $scope.savedTransitions[0],
-        count: '20'
-    }];
+    $scope.savedEffects = [{name: 'asd', data: { colorSet: 'asd' }}, {name: 'asd 1', data: { colorSet: 'asd1' }}];
+    $scope.savedTransitions = [{name: 'trans1', data: { colorSet: 'asd' }}, {name: 'trans2', data: { colorSet: 'asd' }}];
+    $scope.builderTransitions = [];
+
+    socket.on('refresh-transitions', function(data) {
+      $scope.savedTransitions = data;
+    });
+
+    socket.on('refresh-effects', function(data) {
+      $scope.savedEffects = data;
+    });
+
+    io.emit('refresh-transitions', true);
+    io.emit('refresh-effects', true);
 
     $scope.addTransitionTemplate = function () {
-        debugger;
         $scope.builderTransitions.push({
-            //effectsList: $scope.savedTransitions,
-            selectedEffect: $scope.savedTransitions[0],
+            selectedTransition: $scope.savedTransitions[0].name,
             count: '20'
         });
     }
@@ -31,10 +37,6 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
 
     $scope.testEffect = function () {
         //same as start?
-    }
-
-    $scope.startEffect = function () {
-        //same as test?
     }
 
     $scope.effectName = '';
@@ -53,8 +55,7 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
           name: $scope.effectName,
           data: $scope.getEffectModel()
         };
-        $scope.effectNameShow = true;
-
+        
         socket.emit('save-effect', $scope.getEffectModel());
       }
     }
@@ -64,8 +65,7 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
         $scope.effectName = '';
         $scope.effectNameShow = true;
        
-        //refresh saved data : )
-        //io.emit('change-pin-settings', pinSettings);
+        io.emit('refresh-effects', true);
       } 
 
       $scope.setMessage(data);
@@ -80,9 +80,25 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
       }, 5000);
     }
 
+    $scope.getEffectModel = function () {
+      var result = [];
+
+      $scope.builderTransitions.forEach(function(element) {
+        result.push({
+          name: element.selectedTransition,
+          refresh: element.count
+        });
+      }, this);
+      
+      return result;
+    }
+
     $scope.editEffect = function () {
         //first make the routing
         //edit
     }
 
+    $scope.startEffect = function () {
+        //same as test?
+    }
 }]);

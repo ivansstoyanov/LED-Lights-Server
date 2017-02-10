@@ -172,20 +172,20 @@
 
                     <div class="effects-container">
                       <div ng-show="isTabSet('saved')">
-                        <div ng-repeat="transition in savedTransitions">
-                          <div>
-                            {{transition}} 
-                            <button class="btn btn-default" ng-click="editEffect(transition)">Edit</button>
-                            <button class="btn btn-success" ng-click="startEffect(transition)">Start</button>
-                          </div>
-                        </div>
+                        <ul class="list-group">
+                          <li class="list-group-item" ng-repeat="transition in savedEffects" style="margin-bottom:5px">
+                            <span>{{transition.name}} </span>
+                            <button class="btn btn-success" ng-click="startEffect(transition)" style="float:right;margin-top: -7px;margin-left:5px">Start</button>
+                            <button class="btn btn-default" ng-click="editEffect(transition)" style="float:right;margin-top: -7px;">Edit</button>
+                          </li>
+                        </ul>
                       </div>
 
                       <div ng-show="isTabSet('builder')">
                         <div ng-repeat="transition in builderTransitions">
                           <div repeat-transition
-                            effects-list="savedTransitions"
-                            selected-effect="transition.selectedEffect"
+                            transitions-list="savedTransitions"
+                            selected-transition="transition.selectedTransition"
                             count="transition.count">
                           </div>
                         </div>
