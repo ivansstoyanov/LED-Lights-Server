@@ -12,15 +12,15 @@ module.exports = {
 
     start: function (index) {        
         var effectIndex = index || 0;
-        var allData = JSON.parse(JSON.stringify(this.initialData));
-        var startData = allData[effectIndex];
-        var counterTarget = startData.refresh || 10000;
-
         if (effectIndex >= this.initialData.length) {
             console.log('end of effect');
             return;
         }
 
+        var allData = JSON.parse(JSON.stringify(this.initialData));
+        var startData = allData[effectIndex];
+        var counterTarget = startData.refresh || 10000;
+        
         this.repeaterDepthCount++;
         this.allClearHandlers.push(this.startTransition(startData.data, 0, 0, counterTarget, effectIndex));
     },
