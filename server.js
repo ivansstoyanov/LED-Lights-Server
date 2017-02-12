@@ -21,12 +21,33 @@ app.use('/controllers', express.static(__dirname + '/controllers'));
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
+process.stdin.resume();//so the program will not close instantly
+function exitHandler(options, err) {
+    if (options.cleanup) console.log('clean');
+    if (err) {
+      var obj = {
+        time: new Date().toLocaleString(),
+        err: err,
+        errStack: err.stack,
+        errMessage: err.message
+      }
+
+      Database.save('errors', obj);
+    }
+    if (options.exit) process.exit();
+}
+
+process.on('exit', exitHandler.bind(null,{cleanup:true})); //do something when app is closing
+process.on('SIGINT', exitHandler.bind(null, {exit:true})); //catches ctrl+c event
+process.on('uncaughtException', exitHandler.bind(null, {exit:true})); //catches uncaught exceptions
+
 ///////Database Setup
 /////////////////////
 db = db.connect('database', [
     'settings',
     'transitions',
-    'effects'
+    'effects',
+    'errors'
 ]);
 
 Database = {
@@ -119,9 +140,13 @@ setPinSettings();
 
 var SetLedColor = function (color) {
   for (var i = 0; i < activeStrips.length; i++) {
-      LED_Strips[activeStrips[i]].rgpio.pwmWrite(color.r);
-      LED_Strips[activeStrips[i]].ggpio.pwmWrite(color.g);
-      LED_Strips[activeStrips[i]].bgpio.pwmWrite(color.b);
+      try {
+        LED_Strips[activeStrips[i]].rgpio.pwmWrite(color.r);
+        LED_Strips[activeStrips[i]].ggpio.pwmWrite(color.g);
+        LED_Strips[activeStrips[i]].bgpio.pwmWrite(color.b);
+      } catch (err) {
+        //error when setting some colors
+      }
   }
 }
 
