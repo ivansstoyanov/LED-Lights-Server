@@ -6,9 +6,9 @@
             "bPin": 27
         },
         "strip2": {
-            "rPin": 22,
-            "gPin": 23,
-            "bPin": 24
+            "rPin": 24,
+            "gPin": 25,
+            "bPin": 23
         }
     }
 ]
