@@ -62,7 +62,7 @@ Database = {
         return db.transitions.find();
     },
     getTransitionByName: function (name) {
-      return db.transitions.find({name : name});
+      return db.transitions.findOne({name : name});
     },
     getEffects: function () {
         return db.effects.find();
