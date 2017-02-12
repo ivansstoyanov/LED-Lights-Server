@@ -1,25 +1,40 @@
 module.exports = {
     initialData: {},
     SetLedColor: null,
-    transHandler: null,
-
     allClearHandlers: [],
     repeaterDepthCount: -1,
 
     setup: function (data, SetLedColor) {
+        this.stop();
         this.initialData = data;
         this.SetLedColor = SetLedColor;
     },
 
-    start: function () {
-        var counterTarget = 1000000; //infinite count
-        var startData = JSON.parse(JSON.stringify(this.initialData));
+    start: function (index) {        
+        var effectIndex = index || 0;
+        var allData = JSON.parse(JSON.stringify(this.initialData));
+        var startData = allData[effectIndex];
+        var counterTarget = 3;//startData.refresh || 10000;
+
+        if (effectIndex >= this.initialData.length) {
+            console.log('end of effect');
+            return;
+        }
 
         this.repeaterDepthCount++;
-        this.allClearHandlers.push(this.startTransition(startData, 0, 0, counterTarget));
+        this.allClearHandlers.push(this.startTransition(startData.data, 0, 0, counterTarget, effectIndex));
+    },
+
+    stop: function() {
+        for (var i = 0; i < this.allClearHandlers.length; i++) {
+            clearInterval(this.allClearHandlers[i]);
+        }
+
+        this.allClearHandlers = [];
+        this.repeaterDepthCount = -1;
     },
     
-    startTransition: function (data, index, counter, counterTarget) {
+    startTransition: function (data, index, counter, counterTarget, effectIndex) {
         data = JSON.parse(JSON.stringify(data));
 
         if (this.allClearHandlers[this.repeaterDepthCount - 1]) {
@@ -30,12 +45,9 @@ module.exports = {
 
         if (counter >= counterTarget) {
             console.log('end of story');
-            // console.log("all calls length" + this.allClearHandlers.length);
-            // console.log("repeat depth" + this.repeaterDepthCount);
+            this.stop();
+            this.start(effectIndex+1);
             return;
-            
-            //zanulate clearhandlers and counters?
-            //continue with next saved transition
         }
         
         var currentObject = JSON.parse(JSON.stringify(data[index]));
@@ -61,11 +73,11 @@ module.exports = {
         
         var that = this;
         return setInterval(function() {
-            that.transition(data, index, counter, counterTarget, currentColor, targetColor, increment);
+            that.transition(data, index, counter, effectIndex, counterTarget, currentColor, targetColor, increment);
         }, refreshRate/fps);
     },
 
-    transition: function (data, index, counter, counterTarget, currentColor, targetColor, increment) {
+    transition: function (data, index, counter, effectIndex, counterTarget, currentColor, targetColor, increment) {
         // checking R
         if (currentColor.r > targetColor.r) {
             currentColor.r -= increment[0];
@@ -114,7 +126,7 @@ module.exports = {
                 index = 0;
             }
             this.repeaterDepthCount++;
-            this.allClearHandlers.push(this.startTransition(data, index, counter, counterTarget));
+            this.allClearHandlers.push(this.startTransition(data, index, counter, counterTarget, effectIndex));
         }
     },
 

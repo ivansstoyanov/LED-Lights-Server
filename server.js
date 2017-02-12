@@ -67,6 +67,9 @@ Database = {
     getEffects: function () {
         return db.effects.find();
     },
+    getEffectByName: function (name) {
+      return db.effects.findOne({name : name});
+    },
     save: function (type, data) {
       var result = 'done';
       var effect = db[type].find();
@@ -164,16 +167,23 @@ if (!PI) {
 ///////Socket IO Configuration
 //////////////////////////////
 io.on('connection', function(socket) {
-  socket.on('change-pin-settings', function(pinSettings) {
-    //setPinSettings(pinSettings);
+  // socket.on('change-pin-settings', function(pinSettings) {
+  //   //setPinSettings(pinSettings);
 
-    io.emit('change-pin-settings', pinSettings);
+  //   io.emit('change-pin-settings', pinSettings);
+  // });
+
+  // socket.on('change-active-strips', function(activeStrips) {
+  //   activeStrips = activeStrips || ["strip1"];
+
+  //   io.emit('change-active-strips', activeStrips);
+  // });
+
+  socket.on('start', function(name) {
+    transitionService.start();
   });
-
-  socket.on('change-active-strips', function(activeStrips) {
-    activeStrips = activeStrips || ["strip1"];
-
-    io.emit('change-active-strips', activeStrips);
+  socket.on('stop', function(name) {
+    transitionService.stop();
   });
 
   socket.on('change-color', function(color) {
@@ -183,17 +193,58 @@ io.on('connection', function(socket) {
     SetLedColor(color);
   });
 
+  socket.on('test-effect', function(data) {
+    var allTransitions = [];
+
+    for (var i = 0; i < data.data.length; i++) {
+      var transition = Database.getTransitionByName(data.data[i].name);
+
+      allTransitions.push({
+        name: transition.name,
+        data: transition.data,
+        refresh: data.data[i].refresh
+      });
+    }
+
+    transitionService.setup(allTransitions, SetLedColor);
+    transitionService.start();
+  });
+
+  socket.on('start-effect', function(name) {
+    var result = Database.getEffectByName(name);
+    var allTransitions = [];
+
+    for (var i = 0; i < result.data.length; i++) {
+      var transition = Database.getTransitionByName(result.data[i].name);
+
+      allTransitions.push({
+        name: transition.name,
+        data: transition.data,
+        refresh: result.data[i].refresh
+      });
+    }
+
+    transitionService.setup(allTransitions, SetLedColor);
+    transitionService.start();
+  });
+
   socket.on('start-transition', function(name) {
     var result = Database.getTransitionByName(name);
 
-    transitionService.setup(result.data, SetLedColor);
+    transitionService.setup([{
+      name: 'test',
+      data: result.data,
+      refresh: 1000
+    }], SetLedColor);
     transitionService.start();
   });
 
   socket.on('test-transition', function(colorTransitions) {
-    colorTransitions = colorTransitions || {};
-
-    transitionService.setup(colorTransitions, SetLedColor);
+    transitionService.setup([{
+      name: 'test',
+      data: colorTransitions,
+      refresh: 3
+    }], SetLedColor);
     transitionService.start();
   });
 

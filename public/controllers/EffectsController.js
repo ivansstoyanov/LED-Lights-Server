@@ -35,10 +35,6 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
         $scope.builderTransitions.pop();
     }
 
-    $scope.testEffect = function () {
-        //same as start?
-    }
-
     $scope.effectName = '';
     $scope.effectNameShow = false;
     $scope.effectMessage = '';
@@ -98,8 +94,15 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
         //edit
     }
 
-    $scope.startEffect = function () {
-        //same as test?
+    $scope.testEffect = function () {
+        socket.emit('test-effect', {
+          name: 'test',
+          data: $scope.getEffectModel()
+        });
+    }
+
+    $scope.startEffect = function (selectedEffect) {
+        socket.emit('start-effect', selectedEffect.name);
     }
 
     $scope.startTransition = function (selectedTransition) {
