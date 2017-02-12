@@ -43,7 +43,11 @@ process.on('uncaughtException', exitHandler.bind(null, {exit:true})); //catches 
 
 ///////Database Setup
 /////////////////////
-db = db.connect('database', [
+var dbPath = 'database';
+if (PI) {
+  dbPath = '/home/pi/ledServer/LED-Lights-Server/database';
+}
+db = db.connect(dbPath, [
     'settings',
     'transitions',
     'effects',
