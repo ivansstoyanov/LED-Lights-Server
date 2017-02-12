@@ -101,4 +101,12 @@ App.controller('EffectsController', ['$scope', 'socket', 'ColorManager', functio
     $scope.startEffect = function () {
         //same as test?
     }
+
+    $scope.startTransition = function (selectedTransition) {
+        socket.emit('start-transition', selectedTransition.name);
+    }
+
+    $scope.editTransition = function () {
+        //same as test?
+    }
 }]);

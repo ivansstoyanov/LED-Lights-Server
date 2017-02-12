@@ -12,10 +12,7 @@ module.exports = {
     },
 
     start: function () {
-        // console.log('new color' + this.initialData[0].colorSet.r + " " + this.initialData[0].colorSet.g + " " + this.initialData[0].colorSet.b);
-        // console.log('new color' + this.initialData[1].colorSet.r + " " + this.initialData[1].colorSet.g + " " + this.initialData[1].colorSet.b);
-        // console.log('new color' + this.initialData[2].colorSet.r + " " + this.initialData[2].colorSet.g + " " + this.initialData[2].colorSet.b);
-        var counterTarget = 3;
+        var counterTarget = 1000000; //infinite count
         var startData = JSON.parse(JSON.stringify(this.initialData));
 
         this.repeaterDepthCount++;
@@ -24,8 +21,6 @@ module.exports = {
     
     startTransition: function (data, index, counter, counterTarget) {
         data = JSON.parse(JSON.stringify(data));
-        // console.log("all calls length" + this.allClearHandlers.length);
-        // console.log("repeat depth" + this.repeaterDepthCount);
 
         if (this.allClearHandlers[this.repeaterDepthCount - 1]) {
             clearInterval(this.allClearHandlers[this.repeaterDepthCount - 1]);
@@ -53,7 +48,7 @@ module.exports = {
             targetObject = JSON.parse(JSON.stringify(data[index + 1]));
         }
 
-        console.log('target color ' + targetObject.colorSet.r + " " + targetObject.colorSet.g + " " + targetObject.colorSet.b);
+        //console.log('target color ' + targetObject.colorSet.r + " " + targetObject.colorSet.g + " " + targetObject.colorSet.b);
 
         var fps = 30;
         var duration = currentObject.speed;
@@ -111,7 +106,6 @@ module.exports = {
         }
 
         this.SetLedColor(JSON.parse(JSON.stringify(currentColor)));
-        //console.log('new color' + currentColor.r + " " + currentColor.g + " " + currentColor.b);
 
         // transition ended. start a new one
         if (increment[0] == 0 && increment[1] == 0 && increment[2] == 0) {

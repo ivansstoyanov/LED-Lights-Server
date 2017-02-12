@@ -61,6 +61,9 @@ Database = {
     getTransitions: function () {
         return db.transitions.find();
     },
+    getTransitionByName: function (name) {
+      return db.transitions.find({name : name});
+    },
     getEffects: function () {
         return db.effects.find();
     },
@@ -176,8 +179,15 @@ io.on('connection', function(socket) {
   socket.on('change-color', function(color) {
     color = color || {};
 
-    console.log("r: " + color.r + "g: " + color.g + "b: " + color.b);
+    //console.log("r: " + color.r + "g: " + color.g + "b: " + color.b);
     SetLedColor(color);
+  });
+
+  socket.on('start-transition', function(name) {
+    var result = Database.getTransitionByName(name);
+
+    transitionService.setup(result.data, SetLedColor);
+    transitionService.start();
   });
 
   socket.on('test-transition', function(colorTransitions) {
