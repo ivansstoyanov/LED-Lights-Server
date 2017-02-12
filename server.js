@@ -278,4 +278,15 @@ io.on('connection', function(socket) {
 ////////////////////////
 http.listen(3000, function(){
   console.log('listening on *:3000');
+
+  if(PI) {
+    var result = Database.getTransitionByName('helloPi');
+
+    transitionService.setup([{
+      name: 'hello',
+      data: result.data,
+      refresh: 3
+    }], SetLedColor);
+    transitionService.start();
+  }
 });
