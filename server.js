@@ -1,4 +1,4 @@
-PI = false;
+PI = true;
 
 var express = require('express');
 var app = express();
@@ -23,6 +23,7 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
 process.stdin.resume();//so the program will not close instantly
 function exitHandler(options, err) {
+    console.log(err);
     if (options.cleanup) console.log('clean');
     if (err) {
       var obj = {
@@ -93,6 +94,51 @@ Database = {
 ////////////////
 app.use('/api', router);
 
+router.get('/color/:value', function(req, res) {
+  transitionService.stop();
+
+  var val = req.params.value.toLowerCase();
+  if (val == "on" || val == "white") {
+    SetLedColor({ r: 255, g: 255, b: 255 });
+  } else if (val == "off" || val == "black") {
+    SetLedColor({ r: 0, g: 0, b: 0 });
+  } else if (val == "red") {
+    SetLedColor({ r: 255, g: 3, b: 7 });
+  } else if (val == "blue") {
+    SetLedColor({ r: 0, g: 0, b: 255 });
+  } else if (val == "green") {
+    SetLedColor({ r: 0, g: 255, b: 0 });
+  } else if (val == "pink") {
+    SetLedColor({ r: 255, g: 96, b: 208 });
+  } else if (val == "purple") {
+    SetLedColor({ r: 160, g: 32, b: 255 });
+  } else if (val == "yellow") {
+    SetLedColor({ r: 255, g: 224, b: 32 });
+  } else if (val == "orange") {
+    SetLedColor({ r: 255, g: 160, b: 16 });
+  } else if (val == "brown") {
+    SetLedColor({ r: 160, g: 128, b: 96 });
+  } else if (val == "lime") {
+    SetLedColor({ r: 57, g: 255, b: 20 });
+  }
+
+  res.json(val);
+});
+
+router.get('/transition/:value', function(req, res) {
+  transitionService.stop();
+
+  var val = req.params.value.toLowerCase();
+
+  var result = Database.getTransitionByName(val);
+    transitionService.setup([{
+      name: val,
+      data: result.data,
+      refresh: 100000
+    }], SetLedColor);
+    transitionService.start();
+});
+
 router.get('/settings', function(req, res) {
   var pinSettings = Database.getSettings();
 
@@ -112,7 +158,7 @@ if (PI) {
   Gpio = require('pigpio').Gpio;
 }
 
-activeStrips = ['strip1', 'strip2'];
+activeStrips = ['strip1'];
 
 LED_Strips = {
   strip1: {
@@ -279,7 +325,7 @@ io.on('connection', function(socket) {
 http.listen(3000, function(){
   console.log('listening on *:3000');
 
-  if(PI) {
+  if(PI && false) {
     var result = Database.getTransitionByName('helloPi');
 
     transitionService.setup([{
